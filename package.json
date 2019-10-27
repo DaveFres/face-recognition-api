@@ -1,0 +1,15 @@
+{
+  "name": "face-recognition-api",
+  "version": "1.0.0",
+  "description": "backend for face-recognition app",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "author": "David Nanyan",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^1.19.4"
+  }
+}
