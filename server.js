@@ -52,8 +52,33 @@ app.post('/register', (req, res) => {
         password: password,
         entries: 0,
         joined: new Date()
-    })
+    });
     res.json(database.users[database.users.length - 1]);
+});
+
+app.get('/profile/:id', (req, res) => {
+    const { id } = req.params;
+
+    database.users.forEach(user => {
+        if (user.id === id) {
+            // как только находим нужного юзера --- выходим из цикла возвращая его
+            return res.json(user);
+        }
+    });
+    res.status(400).json('not found');
+
+});
+
+app.put('/image', (req, res) => {
+    const { id } = req.body;
+    database.users.forEach(user => {
+        if (user.id === id) {
+            user.entries++;
+            return res.json(user.entries);
+        }
+    });
+
+    res.status(400).json('not found');
 });
 
 app.listen(3000, () => {
