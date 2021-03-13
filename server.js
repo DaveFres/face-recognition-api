@@ -13,8 +13,6 @@ const db = knex({
     }
 });
 
-console.log(db.select('*').from('users').then(data => console.log(data)));
-
 const app = express();
 
 const database = {
@@ -89,14 +87,13 @@ app.get('/profile/:id', (req, res) => {
 
 app.put('/image', (req, res) => {
     const { id } = req.body;
-    database.users.forEach(user => {
-        if (user.id === id) {
-            user.entries++;
-            return res.json(user.entries);
-        }
-    });
-
-    res.status(400).json('not found');
+    db('users').where('id', '=', id)
+    .increment('entries', 1)
+    .returning('entries')
+    .then(entries => {
+        res.json(entries[0])
+    })
+    .catch(() => res.status(400).json('unable to get entries'));
 });
 
 app.listen(3000, () => {
