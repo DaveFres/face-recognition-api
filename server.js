@@ -56,20 +56,32 @@ app.post('/signin', (req, res) => {
 });
 
 app.post('/register', (req, res) => {
-
     const { email, name, password } = req.body;
+    const hash = bcrypt.hashSync(password);
 
-    db('users')
-        .returning('*')
-        .insert({
-            email: email,
-            name: name,
-            joined: new Date()
+    db.transaction(trx => {
+        trx.insert({
+            hash,
+            email
         })
-        .then(user => {
-            res.json(user[0]);
+        .into('login')
+        .returning('email')
+        .then(loginEmail => {
+            return  trx('users')
+                .returning('*')
+                .insert({
+                    email: loginEmail[0],
+                    name: name,
+                    joined: new Date()
+                })
+                .then(user => {
+                    res.json(user[0]);
+                });
         })
-        .catch(() => res.status(400).json('unable to register'));
+        .then(trx.commit)
+        .catch(trx.rollback);
+    })
+    .catch(() => res.status(400).json('unable to register'));
 });
 
 app.get('/profile/:id', (req, res) => {
