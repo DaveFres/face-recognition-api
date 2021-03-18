@@ -4,7 +4,8 @@
   "description": "backend for face-recognition app",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "node server.js",
+    "start:dev": "nodemon server.js"
   },
   "author": "David Nanyan",
   "license": "ISC",
